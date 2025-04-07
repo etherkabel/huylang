@@ -1,4 +1,4 @@
 [submodule "license"]
-	path = .
+	path = ./
 	url = https://github.com/etherkabel/EKL.git
 
