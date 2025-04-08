@@ -4,6 +4,8 @@
 
 #define BUFFER_SIZE 1024
 
+extern void print(FILE *f);
+
 int main(int argc, char* argv[]) {
     FILE *fexec;
     //char buf[BUFFER_SIZE];
@@ -32,23 +34,12 @@ int main(int argc, char* argv[]) {
             exit(EXIT_FAILURE);
         }
         if (!strcmp(command, "print")) {
-            if ((buf = fgetc(fexec)) != '(') {
-                fprintf(stderr,"Ошибка! Отсутствует '(' после PRINT");
-                fclose(fexec);
-                exit(EXIT_FAILURE);
-            }
-            while ((buf = fgetc(fexec)) != ')' && buf != EOF) {
-                printf("%c",buf);
-            }
-            if (buf != ')') {
-                fprintf(stderr, "Ошибка! Отсутствует ')' после аргумента PRINT\n");
-                fclose(fexec);
-                exit(EXIT_FAILURE);
-            }
+            print(fexec);
             printf("\n");
             i=0;
             command[0] = '\0';
         }
+
         if (buf == '\n') {
             i = 0;
             command[0] = '\0';
