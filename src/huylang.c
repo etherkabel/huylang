@@ -22,23 +22,37 @@ int main(int argc, char* argv[]) {
     }
 
     while ((buf = fgetc(fexec)) != EOF) {
-        command[i] = buf;
-        if (!strcmp(command, "PRINT ")) {
-            while ((buf = fgetc(fexec)) != '\n') {
+        if (i < BUFFER_SIZE - 1) {
+            command[i] = buf;
+            ++i;
+            command[i] = '\0';
+        } else {
+            fprintf(stderr, "Ошибка! Превышен размер команды.\n");
+            fclose(fexec);
+            exit(EXIT_FAILURE);
+        }
+        if (!strcmp(command, "print")) {
+            if ((buf = fgetc(fexec)) != '(') {
+                fprintf(stderr,"Ошибка! Отсутствует '(' после PRINT");
+                fclose(fexec);
+                exit(EXIT_FAILURE);
+            }
+            while ((buf = fgetc(fexec)) != ')' && buf != EOF) {
                 printf("%c",buf);
+            }
+            if (buf != ')') {
+                fprintf(stderr, "Ошибка! Отсутствует ')' после аргумента PRINT\n");
+                fclose(fexec);
+                exit(EXIT_FAILURE);
             }
             printf("\n");
             i=0;
-            strcpy(command, "");
-            buf = 0;
-            continue;
+            command[0] = '\0';
         }
         if (buf == '\n') {
-            i=0;
-            buf = 0;
-            strcpy(command, "");
+            i = 0;
+            command[0] = '\0';
         }
-        ++i;
     }
 
     fclose(fexec);
