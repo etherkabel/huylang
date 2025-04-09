@@ -1,21 +1,36 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#ifndef _HUYLANG_H
+#include "include/huylang.h"
+#endif
 
-#define BUFFER_SIZE 1024
+extern void clean_command(char *command, int* i) {
+    command[0] = '\0';
+    *i=0;
+}
 
-extern void print(FILE *f);
+integerVar __int[VAR_INT_COUNT];
+
+char tmp[BUFFER_SIZE];
+
+static FILE *fexec;
+static char buf;
+static char command[BUFFER_SIZE];
+static int i=0;
+
+int int_var_count = 0;
+
 
 int main(int argc, char* argv[]) {
-    FILE *fexec;
-    //char buf[BUFFER_SIZE];
-    char buf;
-    char command[BUFFER_SIZE];
-    int i=0;
-
     if (!argv[1]) {
         printf("Ошибка! Введите имя файла.\n");
         exit(EXIT_FAILURE);
+    }
+
+    if (!strcmp(argv[1],"-v") || !strcmp(argv[1], "--version")) {
+        fprintf(stdout,"HUYLANG INTERPRETATOR\nVERSION 1.0\n");
+        exit(EXIT_SUCCESS);
     }
 
     if (!(fexec = fopen(argv[1],"r"))) {
@@ -36,13 +51,39 @@ int main(int argc, char* argv[]) {
         if (!strcmp(command, "print")) {
             print(fexec);
             printf("\n");
-            i=0;
-            command[0] = '\0';
+            clean_command(command,&i);
+        }
+        if (!strcmp(command, "int")) {
+            fseek(fexec,1,SEEK_CUR);
+            clean_command(command,&i);
+            for (int j=0;(buf = fgetc(fexec)) != ' ';++j) { // получение имени переменной
+                __int[int_var_count].name[j] = buf;
+            }
+            if ((buf = fgetc(fexec)) == '=') {
+                fseek(fexec,1,SEEK_CUR);
+                for (int j=0;(buf = fgetc(fexec)) != '\n';++j) {
+                    if (buf >= '0' && buf <= '9') {
+                        tmp[j] = buf;
+                    } else {
+                        fprintf(stderr,"Ошибка! В числовой переменной замечен строковый литерал\n");
+                        fclose(fexec);
+                        exit(EXIT_FAILURE);
+                    }
+                }
+                __int[int_var_count].value = atoi(tmp);
+                fprintf(stdout,"Var %s: %d\n",__int[int_var_count].name,__int[int_var_count].value);
+                tmp[0] = '\0';
+                int_var_count++;
+            } else {
+                fprintf(stderr,"Ошибка! Пропущен '='\n");
+                fclose(fexec);
+                exit(EXIT_FAILURE);
+            }
+            clean_command(command,&i);
         }
 
         if (buf == '\n') {
-            i = 0;
-            command[0] = '\0';
+            clean_command(command,&i);
         }
     }
 
