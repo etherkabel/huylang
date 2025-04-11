@@ -71,7 +71,6 @@ int main(int argc, char* argv[]) {
                     }
                 }
                 __int[int_var_count].value = atoi(tmp);
-                fprintf(stdout,"Var %s: %d\n",__int[int_var_count].name,__int[int_var_count].value);
                 tmp[0] = '\0';
                 int_var_count++;
             } else {
