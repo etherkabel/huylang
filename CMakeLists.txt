@@ -1,6 +1,7 @@
 project(huylang)
 
 set(SOURCES
+    src/int.c
     src/huylang.c
     src/print.c
     src/include/huylang.h)
