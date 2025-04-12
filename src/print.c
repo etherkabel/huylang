@@ -5,24 +5,24 @@
 #include "include/huylang.h"
 #endif
 
-void print(FILE *f) {
+void print() {
     char buf;
-    if ((buf = fgetc(f)) != '(') {
+    if ((buf = fgetc(fexec)) != '(') {
         fprintf(stderr,"Ошибка! Отсутствует '(' после PRINT");
-        fclose(f);
+        fclose(fexec);
         exit(EXIT_FAILURE);
     }
-    if ((buf = fgetc(f)) == '$') {
+    if ((buf = fgetc(fexec)) == '$') {
         char var_name[BUFFER_SIZE];
         int j;
         bool isVar = false;
-        for (j=0;(buf = fgetc(f)) != ' ' && buf != EOF && buf != ')';++j) {
+        for (j=0;(buf = fgetc(fexec)) != ' ' && buf != EOF && buf != ')';++j) {
             var_name[j] = buf;
         }
         var_name[j+1] = '\0';
-        for (int j=0;j < VAR_INT_COUNT;++j) {
+        for (int j=0;j < VAR_COUNT;++j) {
             if (strcmp(__int[j].name,var_name)) {
-                fprintf(stdout,"%d\n",__int[j].value);
+                fprintf(stdout,"%d",__int[j].value);
                 isVar = true;
                 break;
             }
@@ -32,13 +32,13 @@ void print(FILE *f) {
         }
         isVar = false;
         return;
-    }
-    while ((buf = fgetc(f)) != ')' && buf != EOF) {
+    } else{fseek(fexec,-1,SEEK_CUR);}
+    while ((buf = fgetc(fexec)) != ')' && buf != EOF) {
         printf("%c",buf);
     }
     if (buf != ')') {
         fprintf(stderr, "Ошибка! Отсутствует ')' после аргумента PRINT\n");
-        fclose(f);
+        fclose(fexec);
         exit(EXIT_FAILURE);
     }
 }
