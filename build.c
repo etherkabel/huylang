@@ -8,10 +8,9 @@ int main(int argc, char *argv[]) {
     }
     return 0;
   }
-  chdir("./src");
+  chdir("./build");
   puts("Starting build");
-  CC("../build/huylang.o", "huylang.c");
-  chdir("../build");
+  CC("huylang.o", "../src/huylang.c");
   LD("huylang", "huylang.o");
   puts("Build finished");
   return 0;
