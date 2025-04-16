@@ -2,15 +2,10 @@
 #ifndef _HUYLANG_H
 #define _HUYLANG_H
 #endif
-#ifndef	_STRING_H
+
 #include <string.h>
-#endif
-#ifndef _STDIO_H
 #include <stdio.h>
-#endif
-#ifndef _GLIBCXX_STDLIB_H
 #include <stdlib.h>
-#endif
 
 #define BUFFER_SIZE 1024
 #define VAR_NAME_SIZE 50
@@ -18,6 +13,7 @@
 
 extern void print();
 extern int intCreat();
+extern int charCreat();
 extern void clean_command(char* command, int* i);
 
 typedef struct Int_Var {
