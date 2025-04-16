@@ -1,19 +1,33 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include "include/huylang.h"
 
-#define BUFFER_SIZE 1024
+void clean_command(char *command, int* i) {
+    command[0] = '\0';
+    *i=0;
+}
+
+integerVar __int[VAR_COUNT];
+charVar __char[VAR_COUNT];
+
+
+char tmp[BUFFER_SIZE];
+
+FILE *fexec;
+char buf;
+char command[BUFFER_SIZE];
+int i=0;
+
+int int_var_count = 0;
+int char_var_count = 0;
 
 int main(int argc, char* argv[]) {
-    FILE *fexec;
-    //char buf[BUFFER_SIZE];
-    char buf;
-    char command[BUFFER_SIZE];
-    int i=0;
-
     if (!argv[1]) {
         printf("Ошибка! Введите имя файла.\n");
         exit(EXIT_FAILURE);
+    }
+
+    if (!strcmp(argv[1],"-v") || !strcmp(argv[1], "--version")) {
+        fprintf(stdout,"HUYLANG INTERPRETATOR\nVERSION 1.0\n");
+        exit(EXIT_SUCCESS);
     }
 
     if (!(fexec = fopen(argv[1],"r"))) {
@@ -32,26 +46,23 @@ int main(int argc, char* argv[]) {
             exit(EXIT_FAILURE);
         }
         if (!strcmp(command, "print")) {
-            if ((buf = fgetc(fexec)) != '(') {
-                fprintf(stderr,"Ошибка! Отсутствует '(' после PRINT");
+            print();
+            putchar('\n');
+            clean_command(command,&i);
+        }
+        if (!strcmp(command, "int")) {
+            if (intCreat() == 1) {
+                fprintf(stderr,"Ошибка! В числовой переменной замечен строковый литерал\n");
+                fclose(fexec);
+                exit(EXIT_FAILURE);
+            } else if (intCreat() == 2) {
+                fprintf(stderr,"Ошибка! Пропущен '='\n");
                 fclose(fexec);
                 exit(EXIT_FAILURE);
             }
-            while ((buf = fgetc(fexec)) != ')' && buf != EOF) {
-                printf("%c",buf);
-            }
-            if (buf != ')') {
-                fprintf(stderr, "Ошибка! Отсутствует ')' после аргумента PRINT\n");
-                fclose(fexec);
-                exit(EXIT_FAILURE);
-            }
-            printf("\n");
-            i=0;
-            command[0] = '\0';
         }
         if (buf == '\n') {
-            i = 0;
-            command[0] = '\0';
+            clean_command(command,&i);
         }
     }
 
