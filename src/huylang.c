@@ -1,6 +1,6 @@
 #include "include/huylang.h"
 
-extern void clean_command(char *command, int* i) {
+void clean_command(char *command, int* i) {
     command[0] = '\0';
     *i=0;
 }
@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
         }
         if (!strcmp(command, "print")) {
             print();
-            printf("\n");
+            putchar('\n');
             clean_command(command,&i);
         }
         if (!strcmp(command, "int")) {
@@ -61,7 +61,6 @@ int main(int argc, char* argv[]) {
                 exit(EXIT_FAILURE);
             }
         }
-
         if (buf == '\n') {
             clean_command(command,&i);
         }
