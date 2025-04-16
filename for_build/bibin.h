@@ -38,10 +38,10 @@ struct child_t {
 #define LEN(var) (sizeof(var) / sizeof var[0])
 #define RUN(...) run(PROG(__VA_ARGS__))
 #define SPAWN(...) spawn(PROG(__VA_ARGS__))
-#define CC(output, ...) RUN(COMPILER, COMPILER_FLAGS, __VA_ARGS__, "-o", output)
-#define CC_SPAWN(output, ...) SPAWN(COMPILER, COMPILER_FLAGS, __VA_ARGS__, "-o", output)
-#define LD(output, ...) RUN(LINKER, LINKER_FLAGS, __VA_ARGS__, "-o", output)
-#define LD_SPAWN(output, ...) SPAWN(LINKER, LINKER_FLAGS, __VA_ARGS__, "-o", output)
+#define CC(output, ...) puts("Compiling " output); RUN(COMPILER, COMPILER_FLAGS, __VA_ARGS__, "-o", output)
+#define CC_SPAWN(output, ...) puts("Compiling " output); SPAWN(COMPILER, COMPILER_FLAGS, __VA_ARGS__, "-o", output)
+#define LD(output, ...) puts("Linking " output); RUN(LINKER, LINKER_FLAGS, __VA_ARGS__, "-o", output)
+#define LD_SPAWN(output, ...) puts("Linking " output); SPAWN(LINKER, LINKER_FLAGS, __VA_ARGS__, "-o", output)
 #define RM(...) RUN("rm", "-rf", __VA_ARGS__)
 #define ETERNAL_LOOP for(;;);
 
